@@ -16,6 +16,12 @@
 	API Gateway docs:
 	- https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html
 	
+	Authentication:
+	Get apikey in the event data, and using user in settings.json get the username based on matching GUID
+	The use the authKey in the event data as the password with the username.
+	!! In production make sure the settings.json is unrestricted data with functional restriction to setup_user
+	!!! The apiKey user has restricted data (based on relationships) and functional access
+
 	Event Data:
 	{
 	  "body": {
@@ -25,13 +31,26 @@
 	  "headers": {}
 	}
 
-	!AUTH
-	Get apikey in the event data, and using user in settings.json get the username based on matching GUID
-	The use the authKey in the event data as the password with the username.
-	!! In production make sure the settings.json is unrestricted data with functional restriction to setup_user
-	!!! The apiKey user has restricted data (based on relationships) and functional access
+	event/passed data available via request contect in the app scope.
+	eg
+		var request = mydigitalstructure.get(
+		{
+			scope: 'app',
+			context: 'request'
+		});
+		
+		>
 
-	Run;
+		{ 
+			body: {},
+			queryString: {},
+			headers: {}
+		}
+
+	"app-auth" checks the apikey sent against users in the space (as per settings.json)
+	
+
+	Run:
 	lambda-local -l index.1991-1.0.1.js -t 9000 -e event.json
 */
 
@@ -552,7 +571,7 @@ exports.handler = function (event, context, callback)
 							]);
 						}
 
-						var suppliers = mydigitalstructure.cloud.search(
+						mydigitalstructure.cloud.search(
 						{
 							object: 'contact_person',
 							fields:
