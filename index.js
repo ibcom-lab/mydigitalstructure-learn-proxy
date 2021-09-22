@@ -60,6 +60,8 @@ exports.handler = function (event, context, callback)
 	var _ = require('lodash')
 	var moment = require('moment');
 
+	mydigitalstructure._util.message(event)
+
 	mydigitalstructure.set(
 	{
 		scope: 'app',
